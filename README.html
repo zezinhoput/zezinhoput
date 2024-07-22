@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG D20 Roller</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .player-info, .dice-roller {
+            margin-bottom: 20px;
+        }
+        .status {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>RPG D20 Roller</h1>
+
+    <div class="player-info">
+        <h2>Player Info</h2>
+        <label for="playerName">Name: </label>
+        <input type="text" id="playerName" value="baldur"><br><br>
+        <label for="playerImage">Image URL: </label>
+        <input type="text" id="playerImage" placeholder="http://example.com/image.jpg"><br><br>
+        <img id="playerImg" src="" alt="Player Image" style="max-width: 200px;"><br><br>
+        <label for="playerRace">Race: </label>
+        <select id="playerRace" onchange="updateRaceDescription()">
+            <option value="Humano">Humano</option>
+            <option value="Dhampiro">Dhampiro</option>
+            <option value="Metamorfo">Metamorfo</option>
+            <option value="Feiticeiro da Floresta">Feiticeiro da Floresta</option>
+            <option value="Guardião Arcano">Guardião Arcano</option>
+            <option value="Bruxo de Yahar'gul">Bruxo de Yahar'gul</option>
+            <option value="Guardião Sombrio" selected>Guardião Sombrio</option>
+        </select><br><br>
+        <p id="raceDescription">Manipulação das Sombras, Absorção de Vida, Aura de Terror.</p>
+        <div class="status">
+            <p>Nivel: <span id="nivel">1</span></p>
+            <p>For: <span id="for">1</span> <button onclick="increaseStatus('for')">+</button></p>
+            <p>Vel: <span id="vel">1</span> <button onclick="increaseStatus('vel')">+</button></p>
+            <p>Res: <span id="res">1</span> <button onclick="increaseStatus('res')">+</button></p>
+            <p>Int: <span id="int">1</span> <button onclick="increaseStatus('int')">+</button></p>
+            <p>Dano: <span id="dano">5</span></p>
+            <p>Dm (Dano Mágico): <span id="dm">5</span></p>
+            <p>HP (Vida): <span id="hp">50</span></p>
+            <p>XP: <span id="xp">100</span></p>
+        </div>
+    </div>
+
+    <div class="dice-roller">
+        <h2>Dice Roller</h2>
+        <button onclick="rollDice(1)">Roll 1d20</button>
+        <button onclick="rollDice(2)">Roll 2d20</button>
+        <p>Result: <span id="diceResult">-</span></p>
+    </div>
+
+    <script>
+        const raceDescriptions = {
+            'Humano': 'Adaptabilidade, Resiliência, Treinamento Diversificado.',
+            'Dhampiro': 'Força Vampírica, Regeneração, Visão Noturna.',
+            'Metamorfo': 'Força Bestial, Regeneração Rápida, Sentidos Aguçados.',
+            'Feiticeiro da Floresta': 'Magia da Natureza, Comunhão com a Natureza, Resistência a Maldições.',
+            'Guardião Arcano': 'Poder Mágico, Inteligência Elevada, Resistência Mágica.',
+            'Bruxo de Yahar\'gul': 'Magia Sombria, Imunidade ao Medo, Força Mental.',
+            'Guardião Sombrio': 'Manipulação das Sombras, Absorção de Vida, Aura de Terror.'
+        };
+
+        document.getElementById('playerImage').addEventListener('input', function() {
+            document.getElementById('playerImg').src = this.value;
+        });
+
+        function rollDice(times) {
+            let total = 0;
+            for (let i = 0; i < times; i++) {
+                total += Math.floor(Math.random() * 20) + 1;
+            }
+            document.getElementById('diceResult').innerText = total;
+        }
+
+        function increaseStatus(stat) {
+            let statElement = document.getElementById(stat);
+            let value = parseInt(statElement.innerText);
+            statElement.innerText = value + 1;
+
+            updateDerivedStats();
+            increaseLevel();
+        }
+
+        function updateDerivedStats() {
+            let forValue = parseInt(document.getElementById('for').innerText);
+            let velValue = parseInt(document.getElementById('vel').innerText);
+            let resValue = parseInt(document.getElementById('res').innerText);
+            let intValue = parseInt(document.getElementById('int').innerText);
+
+            document.getElementById('dano').innerText = forValue * 5;
+            document.getElementById('dm').innerText = intValue * 5;
+            document.getElementById('hp').innerText = 50 + resValue * 50;
+        }
+
+        function increaseLevel() {
+            let nivelElement = document.getElementById('nivel');
+            let nivel = parseInt(nivelElement.innerText);
+            nivelElement.innerText = nivel + 1;
+        }
+
+        function updateRaceDescription() {
+            let selectedRace = document.getElementById('playerRace').value;
+            document.getElementById('raceDescription').innerText = raceDescriptions[selectedRace];
+        }
+    </script>
+</body>
+</html>
